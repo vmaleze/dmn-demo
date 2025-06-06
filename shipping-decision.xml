@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="definitions" name="Chained Shipping Decision" namespace="http://camunda.org/schema/1.0/dmn" exporter="dmn-js (https://demo.bpmn.io/dmn)" exporterVersion="17.2.0">
+    <decision id="shippingModeDecision" name="Shipping Mode Decision">
+        <decisionTable id="shippingModeTable" hitPolicy="FIRST">
+            <input id="input1" label="Place of Receipt">
+                <inputExpression id="inputExpr1" typeRef="string">
+                    <text>placeOfReceipt</text>
+                </inputExpression>
+            </input>
+            <input id="input2" label="Place of Delivery">
+                <inputExpression id="inputExpr2" typeRef="string">
+                    <text>placeOfDelivery</text>
+                </inputExpression>
+            </input>
+            <input id="input3" label="Document Status">
+                <inputExpression id="inputExpr3" typeRef="string">
+                    <text>documentStatus</text>
+                </inputExpression>
+            </input>
+            <output id="output1" label="Shipping Mode" name="shippingMode" typeRef="string" />
+            <rule id="rule1">
+                <inputEntry id="UnaryTests_1y9mzpc">
+                    <text>"Shanghai"</text>
+                </inputEntry>
+                <inputEntry id="UnaryTests_0kwagdc">
+                    <text>"Los Angeles"</text>
+                </inputEntry>
+                <inputEntry id="UnaryTests_0xgir9v">
+                    <text>"SUBMITTED"</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_1u6xqnt">
+                    <text>"Air Freight"</text>
+                </outputEntry>
+            </rule>
+            <rule id="rule2">
+                <inputEntry id="UnaryTests_016sif2">
+                    <text>"Hamburg"</text>
+                </inputEntry>
+                <inputEntry id="UnaryTests_08q2t90">
+                    <text>"New York"</text>
+                </inputEntry>
+                <inputEntry id="UnaryTests_1tipvb0">
+                    <text>"FINALIZED"</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_0ors4q3">
+                    <text>"Express Shipping"</text>
+                </outputEntry>
+            </rule>
+            <rule id="rule3">
+                <inputEntry id="UnaryTests_0xht4s4">
+                    <text></text>
+                </inputEntry>
+                <inputEntry id="UnaryTests_1joijih">
+                    <text></text>
+                </inputEntry>
+                <inputEntry id="UnaryTests_0srslhc">
+                    <text></text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_0ddohu6">
+                    <text>"Standard Freight"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision id="costEstimationDecision" name="Cost Estimation Decision">
+        <informationRequirement id="InformationRequirement_1gr6fia">
+            <requiredDecision href="#shippingModeDecision" />
+        </informationRequirement>
+        <decisionTable id="costEstimationTable" hitPolicy="FIRST">
+            <input id="input4" label="Shipping Mode">
+                <inputExpression id="inputExpr4" typeRef="string">
+                    <text>shippingMode</text>
+                </inputExpression>
+            </input>
+            <output id="output2" label="Estimated Cost" name="estimatedCost" typeRef="string" />
+            <rule id="cost1">
+                <inputEntry id="UnaryTests_001e63x">
+                    <text>"Air Freight"</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_0ae483m">
+                    <text>"1000 USD"</text>
+                </outputEntry>
+            </rule>
+            <rule id="cost2">
+                <inputEntry id="UnaryTests_1xy6sg5">
+                    <text>"Express Shipping"</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_036w0zd">
+                    <text>"700 USD"</text>
+                </outputEntry>
+            </rule>
+            <rule id="cost3">
+                <inputEntry id="UnaryTests_00pa57i">
+                    <text>"Standard Freight"</text>
+                </inputEntry>
+                <outputEntry id="LiteralExpression_05o9m4h">
+                    <text>"300 USD"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision id="shippingInformationDecision" name="Shipping Information OutputDecision">
+        <informationRequirement id="InformationRequirement_0i0icdi">
+            <requiredDecision href="#costEstimationDecision" />
+        </informationRequirement>
+        <informationRequirement>
+            <requiredDecision href="#shippingModeDecision"/>
+        </informationRequirement>
+        <decisionTable id="DecisionTable_19mbj9h">
+            <output id="OutputClause_0mv8rkz" label="Shipping Information" name="shippingSummary" typeRef="string" />
+            <rule id="DecisionRule_0df97vi">
+                <outputEntry id="LiteralExpression_1ax2lt4">
+                    <text>concatenate(shippingMode, estimatedCost)</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="DMNDiagram_0e91vid">
+            <dmndi:DMNShape id="DMNShape_0qivl2a" dmnElementRef="shippingModeDecision">
+                <dc:Bounds height="80" width="180" x="150" y="80" />
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="DMNShape_0quix9c" dmnElementRef="costEstimationDecision">
+                <dc:Bounds height="80" width="180" x="390" y="80" />
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="DMNEdge_14986tb" dmnElementRef="InformationRequirement_1gr6fia">
+                <di:waypoint x="330" y="120" />
+                <di:waypoint x="370" y="120" />
+                <di:waypoint x="390" y="120" />
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="DMNEdge_14i5imy" dmnElementRef="InformationRequirement_0i0icdi">
+                <di:waypoint x="570" y="120" />
+                <di:waypoint x="610" y="120" />
+                <di:waypoint x="630" y="120" />
+            </dmndi:DMNEdge>
+            <dmndi:DMNShape id="DMNShape_0ysbx0t" dmnElementRef="shippingInformationDecision">
+                <dc:Bounds height="80" width="180" x="630" y="80" />
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
