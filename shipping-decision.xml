@@ -78,7 +78,7 @@
                     <text>"Air Freight"</text>
                 </inputEntry>
                 <outputEntry id="LiteralExpression_0ae483m">
-                    <text>"1200 USD"</text>
+                    <text>"1000 USD"</text>
                 </outputEntry>
             </rule>
             <rule id="cost2">
